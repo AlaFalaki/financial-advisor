@@ -1,0 +1,14 @@
+{
+  "name": "advisor-in-the-loop",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview"
+  },
+  "dependencies": {
+    "nuxt": "^3.13.0",
+    "marked": "^14.0.0"
+  }
+}

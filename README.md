@@ -41,5 +41,9 @@ npm install
 npm run dev
 ```
 
+```bash
+npx nuxi generate
+```
+
 Open:
 - User view: http://localhost:3000

@@ -55,44 +55,41 @@ const quickQuestions = [
 const messages = ref<{ role: string; content: string }[]>([
   { role: "assistant", content: "Hi — ask me about drawdown strategy, account order, or safe withdrawal." }
 ])
-const selectedFile = ref<File | null>(null)
 
 const send = async () => {
-  if (!input.value && !selectedFile.value) return
-  if (input.value) {
-    messages.value.push({ role: "user", content: input.value })
-  }
+  const text = input.value.trim()
+  if (!text) return
+  messages.value.push({ role: "user", content: text })
   sending.value = true
   try {
-    if (selectedFile.value) {
-      const form = new FormData()
-      form.append("file", selectedFile.value)
-      const res = await apiFetch<any>("/api/users/1/chat/upload", {
-        method: "POST",
-        body: form
-      })
-      messages.value.push({ role: "assistant", content: res.assistant_message })
-      selectedFile.value = null
-    } else {
-      const res = await apiFetch<any>("/api/users/1/chat", {
-        method: "POST",
-        body: { messages: messages.value }
-      })
-      messages.value.push({ role: "assistant", content: res.assistant_message })
-    }
+    const res = await apiFetch<any>("/api/users/1/chat", {
+      method: "POST",
+      body: { messages: messages.value }
+    })
+    messages.value.push({ role: "assistant", content: res.assistant_message })
     input.value = ""
   } finally {
     sending.value = false
   }
 }
 
-const onFile = (e: Event) => {
+const onFile = async (e: Event) => {
   const target = e.target as HTMLInputElement
-  selectedFile.value = target.files ? target.files[0] : null
-  if (selectedFile.value) {
-    send()
-  }
+  const file = target.files ? target.files[0] : null
   target.value = ""
+  if (!file) return
+  sending.value = true
+  try {
+    const form = new FormData()
+    form.append("file", file)
+    const res = await apiFetch<any>("/api/users/1/chat/upload", {
+      method: "POST",
+      body: form
+    })
+    messages.value.push({ role: "assistant", content: res.assistant_message })
+  } finally {
+    sending.value = false
+  }
 }
 
 const sendQuickQuestion = async (q: string) => {

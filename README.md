@@ -42,5 +42,4 @@ npm run dev
 ```
 
 Open:
-- User view: http://localhost:3000/user/chat-intake
-- Advisor view: http://localhost:3000/advisor/queue
+- User view: http://localhost:3000
